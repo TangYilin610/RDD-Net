@@ -1,25 +1,14 @@
 from torch import nn
 import torch
-# from networks.resnet import resnet34, resnet18, resnet50, resnet101, resnet152
 import torch.nn.functional as F
 from torch.nn.utils import prune
-
 from networks.unet import UnetBlock
 import torch.nn.functional as F
-# from networks.unet import UnetBlock
-# from efficientnet_pytorch import EfficientNet
 import torch
 from torch import nn
-# import torchvision.models as models
-# from ChannelAttention import ChannelAttention, SpatialAttention, AFF, iAFF, FAFF
-# import deeps.fetureweight
 from networks.fetureweight import extract_features, ACBBlock, DepthwiseSeparableConv
 from networks.MBpool import MBPOOL
-# from res2net import res2net50_v1b_26w_4s
-# # from resnext import resnext50_32x4d
 from networks.resnest import resnest50
-
-# from resnet import ResNet50_OS16
 import torch.nn.functional as F
 from networks.vit import VisionTransformer
 import random
@@ -28,74 +17,9 @@ from torchvision import models, transforms
 import matplotlib.pyplot as plt
 import cv2
 from torchvision import transforms
-# from resnest import eca_layer
 from networks.Rmcsam import RMCSAM, RMCSAM_CBAM
 from networks.mixstyle_kernel import TriD,MixStyle,EFDMix
 from networks.ChannelAttention import ChannelAttention, SpatialAttention, AFF,iAFF,FAFF,MultiModalFusionModule
-
-
-
-# class ResUnet(nn.Module):
-#     def __init__(self, resnet='resnet34', num_classes=2, pretrained=False, mixstyle_layers=[],
-#                  random_type=None, p=0.5):
-#         super().__init__()
-#         if resnet == 'resnet34':
-#             base_model = resnet34
-#             feature_channels = [64, 64, 128, 256, 512]
-#         elif resnet == 'resnet18':
-#             base_model = resnet18
-#         elif resnet == 'resnet50':
-#             base_model = resnet50
-#             feature_channels = [64, 256, 512, 1024, 2048]
-#         elif resnet == 'resnet101':
-#             base_model = resnet101
-#         elif resnet == 'resnet152':
-#             base_model = resnet152
-#         else:
-#             raise Exception('The Resnet Model only accept resnet18, resnet34, resnet50,'
-#                             'resnet101 and resnet152')
-#
-#         self.mixstyle_layers = mixstyle_layers
-#         self.res = base_model(pretrained=pretrained, mixstyle_layers=mixstyle_layers, random_type=random_type, p=p)
-#
-#         self.num_classes = num_classes
-#
-#         self.up1 = UnetBlock(feature_channels[4], feature_channels[3], 256)
-#         self.up2 = UnetBlock(256, feature_channels[2], 256)
-#         self.up3 = UnetBlock(256, feature_channels[1], 256)
-#         self.up4 = UnetBlock(256, feature_channels[0], 256)
-#
-#         self.up5 = nn.ConvTranspose2d(256, 32, 2, stride=2)
-#         self.bnout = nn.BatchNorm2d(32)
-#
-#         self.seg_head = nn.Conv2d(32, self.num_classes, 1)
-#
-#     def forward(self, input):
-#         x, sfs = self.res(input)
-#         x = F.relu(x)
-#
-#         x = self.up1(x, sfs[3])
-#         x = self.up2(x, sfs[2])
-#         x = self.up3(x, sfs[1])
-#         x = self.up4(x, sfs[0])
-#         x = self.up5(x)
-#         head_input = F.relu(self.bnout(x))
-#
-#         seg_output = self.seg_head(head_input)
-#         return seg_output
-#
-#     def close(self):
-#         for sf in self.sfs:
-#             sf.remove()
-#
-#
-# if __name__ == "__main__":
-#     model = ResUnet(resnet='resnet34', num_classes=2, pretrained=False, mixstyle_layers=['layer1'], random_type='Random')
-#     print(model.res)
-#     model.cuda().eval()
-#     input = torch.rand(2, 3, 512, 512).cuda()
-#     seg_output, x_iw_list, iw_loss = model(input)
-#     print(seg_output.size())
 import torch.optim as optim
 class PolicyNetwork(nn.Module):
     def __init__(self, num_actions, num_states):
@@ -128,26 +52,9 @@ class ResnetModel(nn.Module):
             n_columns: the number of columns in data (the meta data).
         """
         super(ResnetModel, self).__init__()
-        # if resnet == 'resnet34':
-        #     base_model = resnet34
-        #     feature_channels = [64, 64, 128, 256, 512]
-        # elif resnet == 'resnet18':
-        #     base_model = resnet18
-        self.resnet=resnet
-        # if self.resnet == 'resnet50':
-        #     base_model = resnest50
-        #     feature_channels = [64, 256, 512, 1024, 2048]
-
-        # elif resnet == 'resnet101':
-        #     base_model = resnet101
-        # elif resnet == 'resnet152':
-        #     base_model = resnet152
-        # else:
-        #     raise Exception('The Resnet Model only accept resnet18, resnet34, resnet50,'
-        #                     'resnet101 and resnet152')
+        
         self.mixstyle_layers = mixstyle_layers
-        # self.res = base_model(pretrained=pretrained, mixstyle_layers=mixstyle_layers, random_type=random_type, p=p)
-
+       
         self.num_classes = num_classes
 
         self.p = p
@@ -205,9 +112,7 @@ class ResnetModel(nn.Module):
                                bias=False)
         self.conv6_3 = nn.Conv2d(1024, 64, kernel_size=5, stride=2, padding=3,
                                bias=False)
-        # self.acb3 = ACBBlock(512, 64)
-        # self.acb5 = ACBBlock(256, 128)
-        # self.acb6 = ACBBlock(128, 64)
+        
         self.bn6 = norm_layer(64)
         self.relu = nn.ReLU(inplace=True)
         self.avg6 = nn.AvgPool2d(3, stride=2)
